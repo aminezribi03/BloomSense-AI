@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: irisuser
+      POSTGRES_PASSWORD: irispw
+      POSTGRES_DB: irisdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://irisuser:irispw@db/irisdb
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+volumes:
+  db_data:
+    driver: local
